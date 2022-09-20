@@ -12,5 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abf54bcf976dc264da7a10613af21383, type: 3}
   m_Name: New Dialogue
   m_EditorClassIdentifier: 
-  audio: {fileID: 0}
-  text: 
+  audioSourceType: 0
+  dialogueAudio: {fileID: 8300000, guid: 4c2bf80049506564da5a26800c019def, type: 3}
+  dialogueText: DSHIPOAGHPODHGODSHGOSDHGODSUHGIL

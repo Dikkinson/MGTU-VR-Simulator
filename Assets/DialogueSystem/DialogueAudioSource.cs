@@ -10,14 +10,13 @@ public class DialogueAudioSource : MonoBehaviour
 
     private AudioSource audioSource;
 
-    private void Start()
+    private void Awake()
     {
         audioSource = GetComponent<AudioSource>();
     }
 
     public void PlayAudioClip(AudioClip audioClip)
     {
-        audioSource.clip = audioClip;
-        audioSource.Play();
+        audioSource.PlayOneShot(audioClip);
     }
 }
