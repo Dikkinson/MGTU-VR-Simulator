@@ -1,22 +1,32 @@
+using UniRx;
 using UnityEngine;
-
-public enum DialogueAudioSourceType { Phone, Speakers}
 
 [RequireComponent(typeof(AudioSource))]
 public class DialogueAudioSource : MonoBehaviour
 {
-    [SerializeField] private DialogueAudioSourceType audioSourceType;
-    public DialogueAudioSourceType AudioSourceType => audioSourceType;
-
     private AudioSource audioSource;
+
+    private CompositeDisposable disposable = new CompositeDisposable();
+
+    private void OnEnable()
+    {
+        DialogueSystem.StartDialogue.Subscribe(dialogue =>
+        {
+            audioSource.PlayOneShot(dialogue.DialogueAudio);
+        }).AddTo(disposable);
+        DialogueSystem.StopDialogue.Subscribe(_ =>
+        {
+            audioSource.Stop();
+        }).AddTo(disposable);
+    }
+
+    private void OnDisable()
+    {
+        disposable.Clear();
+    }
 
     private void Awake()
     {
         audioSource = GetComponent<AudioSource>();
-    }
-
-    public void PlayAudioClip(AudioClip audioClip)
-    {
-        audioSource.PlayOneShot(audioClip);
     }
 }

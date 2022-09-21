@@ -4,50 +4,31 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using System.Linq;
+using UniRx;
+using System;
 
-public class DialogueSystem : MonoBehaviour
+public class DialogueSystem : ActionObject
 {
-    [SerializeField] private Text dialogueSubtitlesText;
-    [SerializeField] private DialogueAudioSource[] dialogueAudioSources;
+    [SerializeField] private Dialogue[] dialogues;
+    private int currentDialogue = 0;
 
-    public static DialogueSystem Instance { get; private set; }
+    public readonly static ReactiveCommand<Dialogue> StartDialogue = new ReactiveCommand<Dialogue>();
+    public readonly static ReactiveCommand StopDialogue = new ReactiveCommand();
 
-    private void Awake()
+    protected override void BehaviourOnCall()
     {
-        Instance = this;
-    }
-
-    public void StartDialogue(Dialogue dialogue)
-    {
-        SetupAudioSources(dialogue.AudioSourceType, dialogue.DialogueAudio);
-        dialogueSubtitlesText.text = dialogue.DialogueText;
-    }
-
-    private void SetupAudioSources(DialogueAudioSourceType audioSourceType, AudioClip audioClip)
-    {
-        foreach (var source in FindRequaredAudioSource(audioSourceType))
+        StartDialogue.Execute(dialogues[currentDialogue]);
+        Observable.Timer(TimeSpan.FromSeconds(dialogues[currentDialogue].DialogueAudio.length)).Subscribe(_ =>
         {
-            source.PlayAudioClip(audioClip);
-        } 
+            DisableBahaviour();
+        });
+        if (currentDialogue < dialogues.Length)
+            currentDialogue++;    
     }
 
-    private IEnumerable<DialogueAudioSource> FindRequaredAudioSource(DialogueAudioSourceType audioSourceType)
+    protected override void DisableBahaviour()
     {
-        return dialogueAudioSources.Where(type => type.AudioSourceType == audioSourceType).Select(type => type);
+        StopDialogue.Execute();
+        TaskSequenceController.NextAction.Execute();
     }
-
-
-
-    /*//temp
-    public Dialogue[] dialogues;
-    int current = 0;
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            StartDialogue(dialogues[current]);
-            current++;
-        }
-    }*/
-
 }

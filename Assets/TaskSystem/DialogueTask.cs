@@ -10,7 +10,7 @@ public class DialogueTask : TaskBase
     public override async Task StartTask()
     {
         await base.StartTask();
-        DialogueSystem.Instance.StartDialogue(dialogue);
+        //DialogueSystem.Instance.StartDialogue(dialogue);
         Timer timer = new Timer(dialogue.DialogueAudio.length);
         await timer.Start();
         MarkAsComplete();
