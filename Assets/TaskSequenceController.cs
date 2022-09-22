@@ -5,7 +5,7 @@ using UniRx;
 using TMPro;
 
 [System.Serializable]
-public enum Actions { PhoneRing, Dialogue, PressButtn, }
+public enum Actions { PhoneRing, Dialogue, PressButton1, PressButton2, PressButton3, PressButton4, PressButton5, PressButton6 }
 
 public class TaskSequenceController : MonoBehaviour
 {
@@ -32,10 +32,5 @@ public class TaskSequenceController : MonoBehaviour
     private void OnDisable()
     {
         disposables.Clear();
-    }
-
-    private void Update()
-    {
-        Debug.Log(currentAction + " " + currentActionId);
     }
 }
